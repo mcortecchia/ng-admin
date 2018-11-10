@@ -104,6 +104,9 @@ function routing($stateProvider) {
                                 return ReadQueries.getAll(view, page, filters, sortField, sortDir);
                             }
                         }],
+                        nextCursor: ['response', function (response) {
+                            return response.nextCursor;
+                        }],
                         totalItems: ['response', function (response) {
                             return response.totalItems;
                         }],
