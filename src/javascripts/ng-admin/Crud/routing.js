@@ -74,8 +74,9 @@ function routing($stateProvider) {
             }
         })
         .state('list', {
-            url: '?{search:json}&{page:int}&sortField&sortDir',
+            url: '?{search:json}&{cursor:string}&{page:int}&sortField&sortDir',
             params: {
+                cursor: { value: null, squash: true },
                 page: { value: 1, squash: true },
                 search: { value: {}, squash: true },
                 sortField: null,
@@ -92,11 +93,16 @@ function routing($stateProvider) {
                         view: viewProvider('ListView'),
                         response: ['$stateParams', 'ReadQueries', 'view', function ($stateParams, ReadQueries, view) {
                             var page = $stateParams.page,
+                                nextCursor = $stateParams.nextCursor,
                                 filters = $stateParams.search,
                                 sortField = $stateParams.sortField,
                                 sortDir = $stateParams.sortDir;
-
-                            return ReadQueries.getAll(view, page, filters, sortField, sortDir);
+                            if (view.cursorPagination()) {
+                                nextCursor = (nextCursor === undefined ? null : nextCursor);
+                                return ReadQueries.getAllWithCursor(view, nextCursor, filters, sortField, sortDir);
+                            } else {
+                                return ReadQueries.getAll(view, page, filters, sortField, sortDir);
+                            }
                         }],
                         totalItems: ['response', function (response) {
                             return response.totalItems;
@@ -154,6 +160,7 @@ function routing($stateProvider) {
             params: {
                 entity: null,
                 id: null,
+                cursor: { value: null, squash: true },
                 page: { value: 1, squash: true },
                 search: { value: {}, squash: true },
                 sortField: null,
@@ -247,6 +254,7 @@ function routing($stateProvider) {
             controllerAs: 'formController',
             templateProvider: templateProvider('CreateView', createTemplate),
             params: {
+                cursor: { value: null, squash: true },
                 page: { value: 1, squash: true },
                 search: { value: {}, squash: true },
                 defaultValues: { value: {}, squash: true },
@@ -304,6 +312,7 @@ function routing($stateProvider) {
             params: {
                 entity: null,
                 id: null,
+                cursor: { value: null, squash: true },
                 page: { value: 1, squash: true },
                 search: { value: {}, squash: true },
                 sortField: null,
@@ -415,6 +424,7 @@ function routing($stateProvider) {
             controllerAs: 'deleteController',
             templateProvider: templateProvider('DeleteView', deleteTemplate),
             params: {
+                cursor: { value: null, squash: true },
                 page: { value: 1, squash: true },
                 search: { value: {}, squash: true },
                 sortField: null,
@@ -456,6 +466,7 @@ function routing($stateProvider) {
             params: {
                 entity: null,
                 ids: [],
+                cursor: { value: null, squash: true },
                 page: { value: 1, squash: true },
                 search: { value: {}, squash: true },
                 sortField: null,

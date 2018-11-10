@@ -120,6 +120,8 @@ export default class ListLayoutController {
         }
         this.$stateParams.search = values;
         this.$stateParams.page = 1;
+        this.$stateParams.cursor = null; // this is first page
+        this.$stateParams.nextCursor = null; // we may or may not have next page
         this.$state.go('list', this.$stateParams);
     }
 

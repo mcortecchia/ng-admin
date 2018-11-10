@@ -1,0 +1,19 @@
+<nav class="pagination-bar">
+
+    <div class="total" ng-if="paginationCtrl.nextCursor">
+        from: <strong>{{paginationCtrl.cursor || 'first' }}</strong> to: <strong>{{paginationCtrl.nextCursor || 'no more pages'}}</strong>, count: <strong>{{paginationCtrl.nbPages}}</strong>
+    </div>
+    <!-- <div class="total" ng-if="paginationCtrl.nextCursor" translate="PAGINATION" translate-values="{ begin: paginationCtrl.offsetBegin, end: paginationCtrl.offsetEnd, total: paginationCtrl.nbPages }">
+        from: {{curosr}} to: {{nextCursor}}, count: {{nbPages}}
+    </div> -->
+    
+    <div class="total no-record" ng-if="!paginationCtrl.nextCursor">
+        <strong translate="NO_PAGINATION"></strong>
+    </div>
+
+    <ul class="pagination pagination-sm pull-right" role="group" aria-label="pagination" ng-if="paginationCtrl.displayPagination">
+        <li><a href ng-if="!paginationCtrl.cursor" ng-click="paginationCtrl.firstPage()" translate="FIRST"></a></li>
+        <li><a href ng-if="paginationCtrl.cursor" ng-click="paginationCtrl.back()" translate="PREVIOUS"></a></li>
+        <li><a href ng-if="paginationCtrl.nextCursor" ng-click="paginationCtrl.nextPage()" translate="NEXT"></a></li>
+    </ul>
+</nav>
