@@ -6,12 +6,10 @@ export default class DatagridCursorPaginationController {
         var perPage = parseInt(this.$scope.perPage, 10) || 1,
             totalItems = parseInt(this.$scope.totalItems, 10);
 
-        this.cursor = this.$scope.cursor === "" ? null : this.$scope.cursor;
+        this.currentCursor = this.$scope.currentCursor === "" ? null : this.$scope.currentCursor;
         this.nextCursor = this.$scope.nextCursor === "" ? null : this.$scope.nextCursor;
         this.totalItems = totalItems;
 
-        // if current cursor is null, this must be first page
-        this.firstPage = this.cursor == null;
         this.displayPagination = this.nextCursor != null;
 
         $scope.$on('$destroy', this.destroy.bind(this));
@@ -21,7 +19,8 @@ export default class DatagridCursorPaginationController {
      * Link to previous page using back browser history
      */
     back() {
-        if (!this.firstPage) {
+        // if current cursor is null, this must be first page
+        if (this.currentCursor != null) {
             $window.history.back();
         }
     }
@@ -30,7 +29,7 @@ export default class DatagridCursorPaginationController {
      * Link to the next page
      */
     firstPage() {
-        if (this.cursor == mull) {
+        if (this.currentCursor == null) {
             return;
         }
         this.$scope.setCursor()(null);
@@ -40,7 +39,7 @@ export default class DatagridCursorPaginationController {
      * Link to the next page
      */
     nextPage() {
-        if (this.nextCursor == mull) {
+        if (this.nextCursor == null) {
             return;
         }
         this.$scope.setCursor()(this.nextCursor);

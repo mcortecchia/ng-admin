@@ -17,6 +17,11 @@ export default function maDatagridInfinitePagination($window, $document) {
             totalItems: '@',
             nextPage: '&',
             options: '=',
+
+            useCursor: '@',
+            currentCursor: '@',
+            nextCursor: '@',
+            setCursor: '&'
         },
         link(scope) {
             let offset = 400;

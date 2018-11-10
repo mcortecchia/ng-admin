@@ -1,7 +1,7 @@
 import Entry from 'admin-config/lib/Entry';
 
 export default class ListController {
-    constructor($scope, $stateParams, $location, $anchorScroll, ReadQueries, progression, view, dataStore, totalItems, nextCursor) {
+    constructor($scope, $stateParams, $location, $anchorScroll, ReadQueries, progression, view, dataStore, totalItems, currentCursor, nextCursor) {
         this.$scope = $scope;
         this.$stateParams = $stateParams;
         this.$location = $location;
@@ -17,7 +17,7 @@ export default class ListController {
         this.listActions = view.listActions();
         this.totalItems = totalItems;
         this.page = $stateParams.page || 1;
-        this.cursor = $stateParams.cursor || null;
+        this.currentCursor = currentCursor;
         this.nextCursor = nextCursor;
         this.infinitePagination = this.view.infinitePagination();
         this.cursorPagination = this.view.cursorPagination();
@@ -61,7 +61,7 @@ export default class ListController {
         let data;
         const toAddToDatastore = [];
 
-        let queryPromise = getAll(view, page, this.search, this.sortField, this.sortDir)
+        let queryPromise = getAll.apply(this.ReadQueries, [this.view, page, this.search, this.sortField, this.sortDir])
             .then(response => {
                 data = response.data;
                 return this.ReadQueries.getReferenceData(view.fields(), data);
@@ -122,4 +122,4 @@ export default class ListController {
     }
 }
 
-ListController.$inject = ['$scope', '$stateParams', '$location', '$anchorScroll', 'ReadQueries', 'progression', 'view', 'dataStore', 'totalItems', 'nextCursor'];
+ListController.$inject = ['$scope', '$stateParams', '$location', '$anchorScroll', 'ReadQueries', 'progression', 'view', 'dataStore', 'totalItems', 'currentCursor', 'nextCursor'];

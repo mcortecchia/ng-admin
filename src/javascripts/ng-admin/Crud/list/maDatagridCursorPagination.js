@@ -5,7 +5,7 @@ export default function maDatagridCursorPagination() {
     return {
         restrict: 'E',
         scope: {
-            cursor: '@',
+            currentCursor: '@',
             nextCursor: '@',
             perPage: '@',
             totalItems: '@',
