@@ -24,7 +24,7 @@ export default class ListController {
         this.entryCssClasses = this.view.getEntryCssClasses.bind(this.view);
         this.nextPageCallback = this.nextPage.bind(this);
         this.setPageCallback = this.setPage.bind(this);
-        this.fetchCursorCallback = this.fetchCursor.bind(this);
+        this.setCursorCallback = this.setCursor.bind(this);
         this.sortField = this.$stateParams.sortField || this.view.getSortFieldName();
         this.sortDir = this.$stateParams.sortDir || this.view.sortDir();
         this.queryPromises = [];
@@ -40,11 +40,11 @@ export default class ListController {
     }
 
     nextPage(page) {
-        this._fetchPageOrCursor(page, this.ReadQueries.getAll);
-    }
-
-    fetchCursor(cursor) {
-        this._fetchPageOrCursor(cursor, this.ReadQueries.getAllWithCursor);
+        if (this.cursorPagination) {
+            this._fetchPageOrCursor(page, this.ReadQueries.getAllWithCursor);
+        } else {
+            this._fetchPageOrCursor(page, this.ReadQueries.getAll);
+        }
     }
 
     _fetchPageOrCursor(page, getAll) {

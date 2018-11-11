@@ -93,7 +93,7 @@ function routing($stateProvider) {
                         view: viewProvider('ListView'),
                         response: ['$stateParams', 'ReadQueries', 'view', function ($stateParams, ReadQueries, view) {
                             var page = $stateParams.page,
-                                nextCursor = $stateParams.nextCursor,
+                                nextCursor = $stateParams.cursor,
                                 filters = $stateParams.search,
                                 sortField = $stateParams.sortField,
                                 sortDir = $stateParams.sortDir;

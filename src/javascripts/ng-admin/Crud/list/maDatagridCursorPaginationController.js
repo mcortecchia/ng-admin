@@ -1,8 +1,9 @@
 import angular from 'angular';
 
 export default class DatagridCursorPaginationController {
-    constructor($scope) {
+    constructor($scope, $window) {
         this.$scope = $scope;
+        this.$window = $window;
         var perPage = parseInt(this.$scope.perPage, 10) || 1,
             totalItems = parseInt(this.$scope.totalItems, 10);
 
@@ -10,7 +11,8 @@ export default class DatagridCursorPaginationController {
         this.nextCursor = this.$scope.nextCursor === "" ? null : this.$scope.nextCursor;
         this.totalItems = totalItems;
 
-        this.displayPagination = this.nextCursor != null;
+        // if there is only onepage (it's the first page, and there is no next cursor)
+        this.displayPagination = !(this.currentCursor == null && this.nextCursor == null);
 
         $scope.$on('$destroy', this.destroy.bind(this));
     }
@@ -21,7 +23,7 @@ export default class DatagridCursorPaginationController {
     back() {
         // if current cursor is null, this must be first page
         if (this.currentCursor != null) {
-            $window.history.back();
+            this.$window.history.back();
         }
     }
 
@@ -50,4 +52,4 @@ export default class DatagridCursorPaginationController {
     }
 }
 
-DatagridCursorPaginationController.$inject = ['$scope'];
+DatagridCursorPaginationController.$inject = ['$scope', '$window'];
