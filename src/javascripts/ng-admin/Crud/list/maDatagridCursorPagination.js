@@ -1,4 +1,4 @@
-import cursorpPaginationView from './maDatagridCursorPagination.html';
+import cursorPaginationView from './maDatagridCursorPagination.html';
 import DatagridCursorPaginationController from './maDatagridCursorPaginationController';
 
 export default function maDatagridCursorPagination() {
@@ -11,7 +11,7 @@ export default function maDatagridCursorPagination() {
             totalItems: '@',
             setCursor: '&'
         },
-        template: cursorpPaginationView,
+        template: cursorPaginationView,
         controllerAs: 'paginationCtrl',
         controller: DatagridCursorPaginationController
     };

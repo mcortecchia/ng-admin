@@ -1,10 +1,11 @@
 import Entry from 'admin-config/lib/Entry';
 
 export default class ListController {
-    constructor($scope, $stateParams, $location, $anchorScroll, ReadQueries, progression, view, dataStore, totalItems, currentCursor, nextCursor) {
+    constructor($scope, $stateParams, $location, $anchorScroll, $compile, ReadQueries, progression, view, dataStore, totalItems, currentCursor, nextCursor) {
         this.$scope = $scope;
         this.$stateParams = $stateParams;
         this.$location = $location;
+        this.$compile = $compile;
         this.$anchorScroll = $anchorScroll;
         this.ReadQueries = ReadQueries;
         this.progression = progression;
@@ -28,6 +29,13 @@ export default class ListController {
         this.sortField = this.$stateParams.sortField || this.view.getSortFieldName();
         this.sortDir = this.$stateParams.sortDir || this.view.sortDir();
         this.queryPromises = [];
+
+        const cursorHistory = this.$stateParams.cursorHistory || { 'cursors' : [ { 'cursor': null, 'count': 0 } ] };
+        cursorHistory.cursors
+                     .filter(r=>r.cursor == currentCursor)
+                     .forEach(r=>{
+                        r.count = totalItems;
+                     });
 
         if ($scope.selectionUpdater) {
             $scope.selection = $scope.selection || [];
@@ -102,9 +110,18 @@ export default class ListController {
             });
     }
 
-
     setCursor(cursor) {
+        const cursorHistory = this.$stateParams.cursorHistory || { 'cursors' : [ { 'cursor' : null, 'count': 0 }] };
+
+        if (!cursorHistory.cursors.map(r => r.cursor).includes(cursor)) {
+            cursorHistory.cursors.push({ 
+                'cursor': cursor,
+                'count': this.view.perPage()
+            });
+        }
+
         this.$location.search('cursor', cursor);
+        this.$location.search('cursorHistory', JSON.stringify(cursorHistory));
         this.$anchorScroll(0);
     }
 
@@ -122,4 +139,4 @@ export default class ListController {
     }
 }
 
-ListController.$inject = ['$scope', '$stateParams', '$location', '$anchorScroll', 'ReadQueries', 'progression', 'view', 'dataStore', 'totalItems', 'currentCursor', 'nextCursor'];
+ListController.$inject = ['$scope', '$stateParams', '$location', '$anchorScroll', '$compile', 'ReadQueries', 'progression', 'view', 'dataStore', 'totalItems', 'currentCursor', 'nextCursor'];

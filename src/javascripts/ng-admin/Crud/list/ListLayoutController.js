@@ -122,6 +122,7 @@ export default class ListLayoutController {
         this.$stateParams.page = 1;
         this.$stateParams.cursor = null; // this is first page
         this.$stateParams.nextCursor = null; // we may or may not have next page
+        this.$stateParams.cursorHistory = { "cursors": [ { "cursor": null, "count" : 0}] };
         this.$state.go('list', this.$stateParams);
     }
 

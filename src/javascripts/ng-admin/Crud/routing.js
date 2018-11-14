@@ -74,11 +74,12 @@ function routing($stateProvider) {
             }
         })
         .state('list', {
-            url: '?{search:json}&{cursor:string}&{page:int}&sortField&sortDir',
+            url: '?{search:json}&{cursor:string}&{cursorHistory:json}&{page:int}&sortField&sortDir',
             params: {
                 cursor: { value: null, squash: true },
                 page: { value: 1, squash: true },
                 search: { value: {}, squash: true },
+                cursorHistory: { value: { 'cursors' : [ {'cursor': null, 'count': 0 } ] }, squash: true },
                 sortField: null,
                 sortDir: null
             },
@@ -97,8 +98,8 @@ function routing($stateProvider) {
                                 filters = $stateParams.search,
                                 sortField = $stateParams.sortField,
                                 sortDir = $stateParams.sortDir;
+
                             if (view.cursorPagination()) {
-                                nextCursor = (nextCursor === undefined ? null : nextCursor);
                                 return ReadQueries.getAllWithCursor(view, nextCursor, filters, sortField, sortDir);
                             } else {
                                 return ReadQueries.getAll(view, page, filters, sortField, sortDir);
