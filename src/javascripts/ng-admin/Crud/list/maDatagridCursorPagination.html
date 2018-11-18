@@ -6,23 +6,19 @@
     <div class="total" ng-if="paginationCtrl.displayPagination" translate="PAGINATION" translate-values="{ begin: paginationCtrl.offsetBegin, end: paginationCtrl.offsetEnd, total: paginationCtrl.totalItemsDisplay }">
     </div>
 
-    <ul class="pagination pagination-sm pull-right" role="group" aria-label="pagination" ng-if="paginationCtrl.displayPagination">
-<!--
-        <li><a href ng-if="paginationCtrl.currentCursor" ng-click="paginationCtrl.firstPage()" translate="First"></a></li>
--->
-        <li><a href ng-if="paginationCtrl.currentCursor" ng-click="paginationCtrl.back()" translate="PREVIOUS"></a></li>
-        {{paginationCtrl.range()}}
-        <!--
-        <li ng-repeat="record in paginationCtrl.range() track by $index" ng-class="{'active': record.active}">
-            <a href ng-click="paginationCtrl.setCursor(record.cursor)">{{ record.index }}</a>
-        </li>
-        -->
-        <li><a href ng-if="paginationCtrl.nextCursor" ng-click="paginationCtrl.nextPage()" translate="NEXT"></a></li>
-    </ul>
-
-   <!--
-    <div class="total" ng-if="paginationCtrl.displayPagination">
-        from: <strong>{{paginationCtrl.currentCursor || 'first' }}</strong> to: <strong>{{paginationCtrl.nextCursor || 'no more pages'}}</strong>, rows on this page: <strong>{{paginationCtrl.pageItems}}</strong>
+    <div class="total">
+        <i style="margin-left: 20px"  class="fa fa-question" aria-hidden="true"></i>
     </div>
-   --> 
+
+    <ul class="pagination pagination-sm pull-right" role="group" aria-label="pagination" ng-if="paginationCtrl.displayPagination">
+        <li><a href ng-if="paginationCtrl.currentCursor" ng-click="paginationCtrl.back()" translate="PREVIOUS"></a></li>
+        <li ng-repeat="n in paginationCtrl.range(paginationCtrl.cursorPage) track by $index" ng-class="{'active': n == paginationCtrl.cursorPage}">
+            <a href ng-if="n != '.'" ng-click="paginationCtrl.setCursorIndex(n)">{{ n }}</a>
+            <span ng-if="n == '.'">&hellip;</span>
+        </li>
+        <li><a href ng-if="paginationCtrl.nextCursor" ng-click="paginationCtrl.nextPage()" translate="NEXT"></a></li>
+        <li>
+            <a href style="margin-left: 20px" ng-if="paginationCtrl.currentCursor" ng-click="paginationCtrl.firstPage()" class="fa fa-refresh"></a>
+        </li>
+    </ul>
 </nav>

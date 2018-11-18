@@ -30,12 +30,15 @@ export default class ListController {
         this.sortDir = this.$stateParams.sortDir || this.view.sortDir();
         this.queryPromises = [];
 
-        const cursorHistory = this.$stateParams.cursorHistory || { 'cursors' : [ { 'cursor': null, 'count': 0 } ] };
-        cursorHistory.cursors
-                     .filter(r=>r.cursor == currentCursor)
-                     .forEach(r=>{
-                        r.count = totalItems;
-                     });
+        if (this.cursorPagination) {
+            const cursorHistory = this.getCursorHistory();
+            cursorHistory.cursors
+                        .filter(r=>r.cursor === currentCursor)
+                        .forEach(r=>{
+                            r.count = totalItems;
+                        });
+            this.updateCursorHistory(cursorHistory);
+        }
 
         if ($scope.selectionUpdater) {
             $scope.selection = $scope.selection || [];
@@ -110,19 +113,27 @@ export default class ListController {
             });
     }
 
+    getCursorHistory() {
+        return this.$stateParams.cursorHistory || { 'cursors' : [ { 'cursor': null, 'count': undefined } ] };
+    }
+
     setCursor(cursor) {
-        const cursorHistory = this.$stateParams.cursorHistory || { 'cursors' : [ { 'cursor' : null, 'count': 0 }] };
+        const cursorHistory = this.getCursorHistory();
 
         if (!cursorHistory.cursors.map(r => r.cursor).includes(cursor)) {
             cursorHistory.cursors.push({ 
                 'cursor': cursor,
-                'count': this.view.perPage()
+                'count': undefined
             });
         }
 
         this.$location.search('cursor', cursor);
-        this.$location.search('cursorHistory', JSON.stringify(cursorHistory));
+        this.updateCursorHistory(cursorHistory);
         this.$anchorScroll(0);
+    }
+
+    updateCursorHistory(cursorHistory) {
+        this.$location.search('cursorHistory', JSON.stringify(cursorHistory));
     }
 
     setPage(number) {

@@ -79,7 +79,7 @@ function routing($stateProvider) {
                 cursor: { value: null, squash: true },
                 page: { value: 1, squash: true },
                 search: { value: {}, squash: true },
-                cursorHistory: { value: { 'cursors' : [ {'cursor': null, 'count': 0 } ] }, squash: true },
+                cursorHistory: { value: { 'cursors' : [ {'cursor': null, 'count': undefined } ] }, squash: true },
                 sortField: null,
                 sortDir: null
             },

@@ -11,24 +11,24 @@ export default class DatagridCursorPaginationController {
 
         this.currentCursor = this.$scope.currentCursor === "" ? null : this.$scope.currentCursor;
         this.nextCursor = this.$scope.nextCursor === "" ? null : this.$scope.nextCursor;
-        this.cursors = $stateParams.cursorHistory ? $stateParams.cursorHistory.cursors || [ { 'cursor' : null, 'count': 0 }] : [ { 'cursor' : null, 'count': 0 }];
+        this.cursors = $stateParams.cursorHistory.cursors || [];
 
         this.cursors.forEach(cursor => {
-            totalItems += cursor.count;
+            totalItems += cursor.count ? cursor.count : 0;
         });
 
         this.offsetBegin = 0;
-
+        this.cursorPage = 1;
         for (var i in this.cursors) {
             if (this.cursors[i].cursor != this.currentCursor) {
-                this.offsetBegin += this.cursors[i].count
+                this.offsetBegin += this.cursors[i].count ? this.cursors[i].count : 0;
+                this.cursorPage++;
             } else {
                 break;
             }
         }
         this.offsetEnd = this.offsetBegin + pageItems;
         this.totalItemsDisplay = totalItems + (this.nextCursor != null ? "+" : "");
-        //console.log($stateParams.cursorHistory);
 
         // if there is only onepage (it's the first page, and there is no next cursor)
         this.displayPagination = !(this.currentCursor == null && this.nextCursor == null);
@@ -78,23 +78,38 @@ export default class DatagridCursorPaginationController {
     }
 
     /**
+     * Link to the next page
+     */
+    setCursorIndex(index) {
+        if (index === undefined || index < 1 || index - 1 > this.cursors.length) {
+            return;
+        }
+        
+        const record = this.cursors[index - 1];
+        this.$scope.setCursor()(record.cursor);
+    }
+    /**
      * Return an array with the range between min & max, useful for pagination
      *
      * @param {int} min
      * @param {int} max
      * @returns {Array}
      */
-    range() {
+    range(cursorPage) {
         var input = [];
         
         for (let index = 0; index < this.cursors.length; index++) {
             const record = this.cursors[index];
-            input.push( {
-                'index' : index + 1,
-                'cursor': record.cursor,
-                'count': record.count,
-                'active': record.cursor === this.currentCursor
-            });
+
+            if (index < 2 ||
+                index >= this.cursors.length - 2 || 
+                Math.abs(cursorPage - index - 1) < 2) {
+                input.push( '' + (index + 1));
+            } else {
+                if (input.length == 0 || input[input.length - 1] !== '.') {
+                    input.push( '.' );
+                }
+            }
         };
 
         return input;
