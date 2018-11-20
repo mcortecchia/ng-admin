@@ -21,7 +21,8 @@
             next-cursor="{{ listController.nextCursor }}"
             per-page="{{ ::listController.view.perPage() }}"
             total-items="{{ listController.totalItems }}"
-            set-cursor="::listController.setCursorCallback">
+            set-cursor="::listController.setCursorCallback"
+            reset-cursor="::listController.resetCursorCallback">
         </ma-datagrid-cursor-pagination>
     </div>
 </div>
@@ -44,6 +45,5 @@
     options="::listController.infinitePagination"
     use-cursor="{{::listController.cursorPagination}}"
     current-cursor="{{ listController.currentCursor }}"
-    next-cursor="{{ listController.nextCursor }}"
-    set-cursor="::listController.setCursorCallback">
+    next-cursor="{{ listController.nextCursor }}">
 </ma-datagrid-infinite-pagination>

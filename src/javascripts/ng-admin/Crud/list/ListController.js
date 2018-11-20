@@ -26,6 +26,7 @@ export default class ListController {
         this.nextPageCallback = this.nextPage.bind(this);
         this.setPageCallback = this.setPage.bind(this);
         this.setCursorCallback = this.setCursor.bind(this);
+        this.resetCursorCallback = this.resetCursor.bind(this);
         this.sortField = this.$stateParams.sortField || this.view.getSortFieldName();
         this.sortDir = this.$stateParams.sortDir || this.view.sortDir();
         this.queryPromises = [];
@@ -115,6 +116,14 @@ export default class ListController {
 
     getCursorHistory() {
         return this.$stateParams.cursorHistory || { 'cursors' : [ { 'cursor': null, 'count': undefined } ] };
+    }
+
+    resetCursor() {
+        delete this.$stateParams.cursorHistory;
+        const cursorHistory = this.getCursorHistory();
+        this.$location.search('cursor', null);
+        this.updateCursorHistory(cursorHistory);
+        this.$anchorScroll(0);
     }
 
     setCursor(cursor) {

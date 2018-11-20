@@ -50,11 +50,8 @@ export default class DatagridCursorPaginationController {
     /**
      * Link to the next page
      */
-    firstPage() {
-        if (this.currentCursor == null) {
-            return;
-        }
-        this.$scope.setCursor()(null);
+    resertCursor() {
+        this.$scope.resetCursor()();
     }
 
     /**
