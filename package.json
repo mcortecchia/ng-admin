@@ -6,7 +6,7 @@
   "main": "lib/javascripts/ng-admin.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/marmelab/ng-admin.git"
+    "url": "git://github.com/SamG1000/ng-admin.git"
   },
   "files": [
     "*.md",
@@ -42,6 +42,7 @@
     "ui-select": "0.18.1"
   },
   "devDependencies": {
+    "admin-config": "github:samg1000/admin-config#cursor-pagination",
     "angular-mocks": "~1.6.1",
     "babel": "^6.5.2",
     "babel-cli": "^6.14.0",
