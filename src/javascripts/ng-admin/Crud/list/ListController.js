@@ -31,16 +31,6 @@ export default class ListController {
         this.sortDir = this.$stateParams.sortDir || this.view.sortDir();
         this.queryPromises = [];
 
-        if (this.cursorPagination) {
-            const cursorHistory = this.getCursorHistory();
-            cursorHistory.cursors
-                        .filter(r=>r.cursor === currentCursor)
-                        .forEach(r=>{
-                            r.count = totalItems;
-                        });
-            this.updateCursorHistory(cursorHistory);
-        }
-
         if ($scope.selectionUpdater) {
             $scope.selection = $scope.selection || [];
             $scope.$watch('selection', $scope.selectionUpdater);

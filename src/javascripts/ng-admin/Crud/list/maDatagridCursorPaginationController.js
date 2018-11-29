@@ -1,9 +1,10 @@
 import angular from 'angular';
 
 export default class DatagridCursorPaginationController {
-    constructor($scope, $stateParams, $window) {
+    constructor($scope, $stateParams, $location, $window) {
         this.$scope = $scope;
         this.$stateParams = $stateParams;
+        this.$location = $location;
         this.$window = $window;
         var perPage = parseInt(this.$scope.perPage, 10) || 1,
             pageItems = parseInt(this.$scope.totalItems, 10),
@@ -11,17 +12,24 @@ export default class DatagridCursorPaginationController {
 
         this.currentCursor = this.$scope.currentCursor === "" ? null : this.$scope.currentCursor;
         this.nextCursor = this.$scope.nextCursor === "" ? null : this.$scope.nextCursor;
-        this.cursors = $stateParams.cursorHistory.cursors || [];
 
-        this.cursors.forEach(cursor => {
+        const cursorHistory = this.getCursorHistory();
+        cursorHistory.cursors
+                    .filter(r=>r.cursor === this.currentCursor)
+                    .forEach(r=>{
+                        r.count = pageItems;
+                    });
+        this.updateCursorHistory(cursorHistory);
+
+        cursorHistory.cursors.forEach(cursor => {
             totalItems += cursor.count ? cursor.count : 0;
         });
 
         this.offsetBegin = 0;
         this.cursorPage = 1;
-        for (var i in this.cursors) {
-            if (this.cursors[i].cursor != this.currentCursor) {
-                this.offsetBegin += this.cursors[i].count ? this.cursors[i].count : 0;
+        for (var i in cursorHistory.cursors) {
+            if (cursorHistory.cursors[i].cursor != this.currentCursor) {
+                this.offsetBegin += cursorHistory.cursors[i].count ? cursorHistory.cursors[i].count : 0;
                 this.cursorPage++;
             } else {
                 break;
@@ -35,6 +43,14 @@ export default class DatagridCursorPaginationController {
         this.pageItems = pageItems;
         this.totalItems = totalItems;
         $scope.$on('$destroy', this.destroy.bind(this));
+    }
+
+    getCursorHistory() {
+        return this.$stateParams.cursorHistory || { 'cursors' : [ { 'cursor': null, 'count': undefined } ] };
+    }
+
+    updateCursorHistory(cursorHistory) {
+        this.$location.search('cursorHistory', JSON.stringify(cursorHistory));
     }
 
     /**
@@ -78,11 +94,13 @@ export default class DatagridCursorPaginationController {
      * Link to the next page
      */
     setCursorIndex(index) {
-        if (index === undefined || index < 1 || index - 1 > this.cursors.length) {
+        const cursorHistory = this.getCursorHistory();
+
+        if (index === undefined || index < 1 || index - 1 > cursorHistory.cursors.length) {
             return;
         }
         
-        const record = this.cursors[index - 1];
+        const record = cursorHistory.cursors[index - 1];
         this.$scope.setCursor()(record.cursor);
     }
     /**
@@ -93,13 +111,15 @@ export default class DatagridCursorPaginationController {
      * @returns {Array}
      */
     range(cursorPage) {
+        const cursorHistory = this.getCursorHistory();
+
         var input = [];
         
-        for (let index = 0; index < this.cursors.length; index++) {
-            const record = this.cursors[index];
+        for (let index = 0; index < cursorHistory.cursors.length; index++) {
+            const record = cursorHistory.cursors[index];
 
             if (index < 2 ||
-                index >= this.cursors.length - 2 || 
+                index >= cursorHistory.cursors.length - 2 || 
                 Math.abs(cursorPage - index - 1) < 2) {
                 input.push( '' + (index + 1));
             } else {
@@ -117,4 +137,4 @@ export default class DatagridCursorPaginationController {
     }
 }
 
-DatagridCursorPaginationController.$inject = ['$scope', '$stateParams', '$window'];
+DatagridCursorPaginationController.$inject = ['$scope', '$stateParams', '$location', '$window'];

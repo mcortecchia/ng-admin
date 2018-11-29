@@ -7,7 +7,7 @@
     </div>
 
     <ul class="pagination pagination-sm pull-right" role="group" aria-label="pagination" ng-if="paginationCtrl.displayPagination">
-        <li><a href ng-if="paginationCtrl.currentCursor" ng-click="paginationCtrl.back()" translate="PREVIOUS"></a></li>
+        <li><a href ng-if="paginationCtrl.currentCursor" ng-click="paginationCtrl.setCursorIndex(paginationCtrl.cursorPage - 1)" translate="PREVIOUS"></a></li>
         <li ng-repeat="n in paginationCtrl.range(paginationCtrl.cursorPage) track by $index" ng-class="{'active': n == paginationCtrl.cursorPage}">
             <a href ng-if="n != '.'" ng-click="paginationCtrl.setCursorIndex(n)">{{ n }}</a>
             <span ng-if="n == '.'">&hellip;</span>
