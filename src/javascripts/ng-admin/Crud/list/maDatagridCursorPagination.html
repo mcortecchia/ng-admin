@@ -3,7 +3,7 @@
         <strong translate="NO_PAGINATION"></strong>
     </div>
 
-    <div class="total" ng-if="paginationCtrl.displayPagination" translate="PAGINATION" translate-values="{ begin: paginationCtrl.offsetBegin, end: paginationCtrl.offsetEnd, total: paginationCtrl.totalItemsDisplay }">
+    <div class="total" ng-if="paginationCtrl.totalItems > 0" translate="PAGINATION" translate-values="{ begin: paginationCtrl.offsetBegin, end: paginationCtrl.offsetEnd, total: paginationCtrl.totalItemsDisplay }">
     </div>
 
     <ul class="pagination pagination-sm pull-right" role="group" aria-label="pagination" ng-if="paginationCtrl.displayPagination">
