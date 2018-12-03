@@ -20,9 +20,8 @@
             current-cursor="{{ listController.currentCursor }}"
             next-cursor="{{ listController.nextCursor }}"
             per-page="{{ ::listController.view.perPage() }}"
-            total-items="{{ listController.totalItems }}"
-            set-cursor="::listController.setCursorCallback"
-            reset-cursor="::listController.resetCursorCallback">
+            page-items="{{ listController.pageItems }}"
+            set-cursor="::listController.setCursorCallback">
         </ma-datagrid-cursor-pagination>
     </div>
 </div>

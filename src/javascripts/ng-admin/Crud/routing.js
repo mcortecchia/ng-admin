@@ -79,7 +79,7 @@ function routing($stateProvider) {
                 cursor: { value: null, squash: true },
                 page: { value: 1, squash: true },
                 search: { value: {}, squash: true },
-                cursorHistory: { value: { 'cursors' : [ {'cursor': null, 'count': undefined } ] }, squash: true },
+                cursorHistory: { value: null, squash: true },
                 sortField: null,
                 sortDir: null
             },
@@ -110,6 +110,9 @@ function routing($stateProvider) {
                         }],
                         nextCursor: ['response', function (response) {
                             return response.nextCursor;
+                        }],
+                        pageItems: ['response', function (response) {
+                            return Array.isArray(response.data) ? response.data.length : 0;
                         }],
                         totalItems: ['response', function (response) {
                             return response.totalItems;

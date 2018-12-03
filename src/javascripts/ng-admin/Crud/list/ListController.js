@@ -1,7 +1,7 @@
 import Entry from 'admin-config/lib/Entry';
 
 export default class ListController {
-    constructor($scope, $stateParams, $location, $anchorScroll, $compile, ReadQueries, progression, view, dataStore, totalItems, currentCursor, nextCursor) {
+    constructor($scope, $stateParams, $location, $anchorScroll, $compile, ReadQueries, progression, view, dataStore, pageItems, totalItems, currentCursor, nextCursor) {
         this.$scope = $scope;
         this.$stateParams = $stateParams;
         this.$location = $location;
@@ -16,6 +16,7 @@ export default class ListController {
         this.dataStore = dataStore;
         this.fields = view.fields();
         this.listActions = view.listActions();
+        this.pageItems = pageItems;
         this.totalItems = totalItems;
         this.page = $stateParams.page || 1;
         this.currentCursor = currentCursor;
@@ -26,7 +27,6 @@ export default class ListController {
         this.nextPageCallback = this.nextPage.bind(this);
         this.setPageCallback = this.setPage.bind(this);
         this.setCursorCallback = this.setCursor.bind(this);
-        this.resetCursorCallback = this.resetCursor.bind(this);
         this.sortField = this.$stateParams.sortField || this.view.getSortFieldName();
         this.sortDir = this.$stateParams.sortDir || this.view.sortDir();
         this.queryPromises = [];
@@ -104,35 +104,9 @@ export default class ListController {
             });
     }
 
-    getCursorHistory() {
-        return this.$stateParams.cursorHistory || { 'cursors' : [ { 'cursor': null, 'count': undefined } ] };
-    }
-
-    resetCursor() {
-        delete this.$stateParams.cursorHistory;
-        const cursorHistory = this.getCursorHistory();
-        this.$location.search('cursor', null);
-        this.updateCursorHistory(cursorHistory);
-        this.$anchorScroll(0);
-    }
-
     setCursor(cursor) {
-        const cursorHistory = this.getCursorHistory();
-
-        if (!cursorHistory.cursors.map(r => r.cursor).includes(cursor)) {
-            cursorHistory.cursors.push({ 
-                'cursor': cursor,
-                'count': undefined
-            });
-        }
-
         this.$location.search('cursor', cursor);
-        this.updateCursorHistory(cursorHistory);
         this.$anchorScroll(0);
-    }
-
-    updateCursorHistory(cursorHistory) {
-        this.$location.search('cursorHistory', JSON.stringify(cursorHistory));
     }
 
     setPage(number) {
@@ -149,4 +123,4 @@ export default class ListController {
     }
 }
 
-ListController.$inject = ['$scope', '$stateParams', '$location', '$anchorScroll', '$compile', 'ReadQueries', 'progression', 'view', 'dataStore', 'totalItems', 'currentCursor', 'nextCursor'];
+ListController.$inject = ['$scope', '$stateParams', '$location', '$anchorScroll', '$compile', 'ReadQueries', 'progression', 'view', 'dataStore', 'pageItems', 'totalItems', 'currentCursor', 'nextCursor'];

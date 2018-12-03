@@ -8,9 +8,8 @@ export default function maDatagridCursorPagination() {
             currentCursor: '@',
             nextCursor: '@',
             perPage: '@',
-            totalItems: '@',
-            setCursor: '&',
-            resetCursor: '&'
+            pageItems: '@',
+            setCursor: '&'
         },
         template: cursorPaginationView,
         controllerAs: 'paginationCtrl',

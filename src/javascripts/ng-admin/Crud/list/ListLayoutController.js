@@ -47,6 +47,20 @@ export default class ListLayoutController {
             }, 500),
             true
         );
+        // reset page and cursor sort direction changes
+        $scope.$watch(
+            () => $location.search() && $location.search().sortDir,
+            debounce((newValues, oldValues) => {
+                if (newValues != oldValues) {
+                    this.cursor = null;
+                    this.cursorHistory = { "cursors": [ { "cursor": null, "count" : 0}] };
+                    this.page = 1;
+
+                    this.updateFilters();
+                }
+            }, 500),
+            true
+        );
         this.filters = view.filters();
         this.enabledFilters = this.getEnabledFilters();
         this.hasFilters = Object.keys(this.filters).length > 0;
@@ -128,7 +142,6 @@ export default class ListLayoutController {
         // update cursor data to what have been passed in the URL
         this.$stateParams.page = this.page;
         this.$stateParams.cursor = this.cursor;
-//        this.$stateParams.nextCursor = null; // next cursor is only available when API comes back
         this.$stateParams.cursorHistory = this.cursorHistory;
         this.$state.go('list', this.$stateParams);
     }

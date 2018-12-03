@@ -7,13 +7,14 @@ export default class DatagridCursorPaginationController {
         this.$location = $location;
         this.$window = $window;
         var perPage = parseInt(this.$scope.perPage, 10) || 1,
-            pageItems = parseInt(this.$scope.totalItems, 10),
+            pageItems = parseInt(this.$scope.pageItems, 10),
             totalItems = 0;
 
         this.currentCursor = this.$scope.currentCursor === "" ? null : this.$scope.currentCursor;
         this.nextCursor = this.$scope.nextCursor === "" ? null : this.$scope.nextCursor;
 
-        const cursorHistory = this.getCursorHistory();
+        var cursorHistory = this.getCursorHistory();
+
         cursorHistory.cursors
                     .filter(r=>r.cursor === this.currentCursor)
                     .forEach(r=>{
@@ -46,7 +47,9 @@ export default class DatagridCursorPaginationController {
     }
 
     getCursorHistory() {
-        return this.$stateParams.cursorHistory || { 'cursors' : [ { 'cursor': null, 'count': undefined } ] };
+        return this.$stateParams.cursorHistory || { 
+            'cursors' : [ { 'cursor': null, 'count': undefined } ]
+        };
     }
 
     updateCursorHistory(cursorHistory) {
@@ -54,20 +57,13 @@ export default class DatagridCursorPaginationController {
     }
 
     /**
-     * Link to previous page using back browser history
+     * Reset cursor history and cursor
      */
-    back() {
-        // if current cursor is null, this must be first page
-        if (this.currentCursor != null) {
-            this.$window.history.back();
-        }
-    }
-
-    /**
-     * Link to the next page
-     */
-    resertCursor() {
-        this.$scope.resetCursor()();
+    resetCursor() {
+        delete this.$stateParams.cursorHistory;
+        const cursorHistory = this.getCursorHistory();
+        this.updateCursorHistory(cursorHistory);
+        this.setCursor(null);
     }
 
     /**
@@ -77,7 +73,7 @@ export default class DatagridCursorPaginationController {
         if (this.nextCursor == null) {
             return;
         }
-        this.$scope.setCursor()(this.nextCursor);
+        this.setCursor(this.nextCursor);
     }
 
     /**
@@ -88,6 +84,16 @@ export default class DatagridCursorPaginationController {
             return;
         }
         this.$scope.setCursor()(cursor);
+
+        const cursorHistory = this.getCursorHistory();
+
+        if (!cursorHistory.cursors.map(r => r.cursor).includes(cursor)) {
+            cursorHistory.cursors.push({ 
+                'cursor': cursor,
+                'count': undefined
+            });
+        }
+        this.updateCursorHistory(cursorHistory);
     }
 
     /**
@@ -101,7 +107,7 @@ export default class DatagridCursorPaginationController {
         }
         
         const record = cursorHistory.cursors[index - 1];
-        this.$scope.setCursor()(record.cursor);
+        this.setCursor(record.cursor);
     }
     /**
      * Return an array with the range between min & max, useful for pagination
