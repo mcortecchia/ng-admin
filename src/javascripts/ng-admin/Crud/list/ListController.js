@@ -1,10 +1,11 @@
 import Entry from 'admin-config/lib/Entry';
 
 export default class ListController {
-    constructor($scope, $stateParams, $location, $anchorScroll, ReadQueries, progression, view, dataStore, totalItems) {
+    constructor($scope, $stateParams, $location, $anchorScroll, $compile, ReadQueries, progression, view, dataStore, pageItems, totalItems, currentCursor, nextCursor) {
         this.$scope = $scope;
         this.$stateParams = $stateParams;
         this.$location = $location;
+        this.$compile = $compile;
         this.$anchorScroll = $anchorScroll;
         this.ReadQueries = ReadQueries;
         this.progression = progression;
@@ -15,12 +16,17 @@ export default class ListController {
         this.dataStore = dataStore;
         this.fields = view.fields();
         this.listActions = view.listActions();
+        this.pageItems = pageItems;
         this.totalItems = totalItems;
         this.page = $stateParams.page || 1;
+        this.currentCursor = currentCursor;
+        this.nextCursor = nextCursor;
         this.infinitePagination = this.view.infinitePagination();
+        this.cursorPagination = this.view.cursorPagination();
         this.entryCssClasses = this.view.getEntryCssClasses.bind(this.view);
         this.nextPageCallback = this.nextPage.bind(this);
         this.setPageCallback = this.setPage.bind(this);
+        this.setCursorCallback = this.setCursor.bind(this);
         this.sortField = this.$stateParams.sortField || this.view.getSortFieldName();
         this.sortDir = this.$stateParams.sortDir || this.view.sortDir();
         this.queryPromises = [];
@@ -36,6 +42,14 @@ export default class ListController {
     }
 
     nextPage(page) {
+        if (this.cursorPagination) {
+            this._fetchPageOrCursor(page, this.ReadQueries.getAllWithCursor);
+        } else {
+            this._fetchPageOrCursor(page, this.ReadQueries.getAll);
+        }
+    }
+
+    _fetchPageOrCursor(page, getAll) {
         if (this.loadingPage) {
             return;
         }
@@ -49,8 +63,7 @@ export default class ListController {
         let data;
         const toAddToDatastore = [];
 
-        let queryPromise = this.ReadQueries
-            .getAll(view, page, this.search, this.sortField, this.sortDir)
+        let queryPromise = getAll.apply(this.ReadQueries, [this.view, page, this.search, this.sortField, this.sortDir])
             .then(response => {
                 data = response.data;
                 return this.ReadQueries.getReferenceData(view.fields(), data);
@@ -91,6 +104,11 @@ export default class ListController {
             });
     }
 
+    setCursor(cursor) {
+        this.$location.search('cursor', cursor);
+        this.$anchorScroll(0);
+    }
+
     setPage(number) {
         this.$location.search('page', number);
         this.$anchorScroll(0);
@@ -105,4 +123,4 @@ export default class ListController {
     }
 }
 
-ListController.$inject = ['$scope', '$stateParams', '$location', '$anchorScroll', 'ReadQueries', 'progression', 'view', 'dataStore', 'totalItems'];
+ListController.$inject = ['$scope', '$stateParams', '$location', '$anchorScroll', '$compile', 'ReadQueries', 'progression', 'view', 'dataStore', 'pageItems', 'totalItems', 'currentCursor', 'nextCursor'];
