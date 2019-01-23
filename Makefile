@@ -1,6 +1,6 @@
 .PHONY: build
 
-install: ../admin-config
+install:
 	npm install
 	node _postinstall.js
 
@@ -11,13 +11,6 @@ run: examples/blog/build
 
 examples/blog/build:
 	mkdir examples/blog/build
-
-../admin-config:
-	@echo "Checking out admin-config"
-	cd ../ && \
-		git clone --single-branch -b cursor-pagination https://github.com/SamG1000/admin-config && \
-		cd ./admin-config && \
-		npm install
 
 transpile-no-remove:
 	./node_modules/.bin/babel src/javascripts -d lib/javascripts --source-maps > /dev/null
@@ -31,7 +24,7 @@ transpile:
 	cd src && rsync -R `find . -name *.html` ../lib # copy all HTML files keeping structure from src to lib
 	cp -Rf ./src/sass/ lib/sass/
 
-build: ../admin-config
+build:
 	rm -rf build/*
 	make transpile
 	NODE_ENV=production ./node_modules/webpack/bin/webpack.js -p --optimize-minimize --optimize-occurence-order --optimize-dedupe --progress --devtool source-map
