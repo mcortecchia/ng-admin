@@ -1,6 +1,6 @@
 var codemirror = require('codemirror');
 
-global.jsonlint = require('jsonlint/web/jsonlint.js');
+global.jsonlint = require('jsonlint-mod/web/jsonlint.js');
 
 require('codemirror/addon/edit/closebrackets');
 require('codemirror/addon/edit/matchbrackets');
