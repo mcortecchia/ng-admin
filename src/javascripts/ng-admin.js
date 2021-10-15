@@ -7,6 +7,10 @@ require('./ng-admin/Crud/CrudModule');
 import Factory from 'admin-config/lib/Factory';
 
 const moduleName = 'ng-admin';
+
+angular.uppercase=angular.$$uppercase;
+angular.lowercase=angular.$$lowercase;
+
 const factory = angular.module('AdminDescriptionModule', []);
 factory.constant('AdminDescription', new Factory());
 
