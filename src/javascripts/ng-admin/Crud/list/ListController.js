@@ -22,7 +22,7 @@ export default class ListController {
         this.currentCursor = currentCursor;
         this.nextCursor = nextCursor;
         this.infinitePagination = this.view.infinitePagination();
-        this.cursorPagination = this.view.cursorPagination();
+        this.cursorPagination = typeof(this.view.cursorPagination) !== 'undefined' && this.view.cursorPagination();
         this.entryCssClasses = this.view.getEntryCssClasses.bind(this.view);
         this.nextPageCallback = this.nextPage.bind(this);
         this.setPageCallback = this.setPage.bind(this);

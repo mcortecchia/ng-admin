@@ -99,7 +99,7 @@ function routing($stateProvider) {
                                 sortField = $stateParams.sortField,
                                 sortDir = $stateParams.sortDir;
 
-                            if (view.cursorPagination()) {
+                            if (typeof(view.cursorPagination) !== 'undefined' && view.cursorPagination()) {
                                 return ReadQueries.getAllWithCursor(view, nextCursor, filters, sortField, sortDir);
                             } else {
                                 return ReadQueries.getAll(view, page, filters, sortField, sortDir);
